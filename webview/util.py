@@ -225,7 +225,7 @@ def js_bridge_call(window: Window, func_name: str, param: Any, value_id: str) ->
 
     if func is not None:
         try:
-            func_params = param
+            func_params = param if isinstance(param, dict) else json.loads(param)
             thread = Thread(target=_call)
             thread.start()
         except Exception:

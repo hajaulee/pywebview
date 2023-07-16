@@ -43,6 +43,9 @@ window.pywebview = {
                         window.pywebview._QWebChannel.objects.external.call(funcName, JSON.stringify(params), id);
                     }
                     break;
+                case 'pyanwe':
+                    jsBridge.call(funcName, JSON.stringify(params), id)
+                    break;
             }
         }
     },
