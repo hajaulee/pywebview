@@ -1,4 +1,5 @@
 import json
+from typing import Any
 from java import (
     jclass, dynamic_proxy
 )
@@ -65,6 +66,9 @@ class BrowserPresenter:
         pass
 
     def toast(message: str):
+        pass
+
+    def getActivity() -> Any:
         pass
 
 mainPresenter: BrowserPresenter = None  # Init from java
