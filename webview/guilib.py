@@ -3,6 +3,7 @@ from __future__ import annotations
 import logging
 import os
 import platform
+import sys
 from types import ModuleType
 from typing import Any, Callable, cast
 
@@ -10,7 +11,7 @@ from typing_extensions import Literal, TypeAlias
 
 from webview.util import WebViewException
 
-GUIType: TypeAlias = Literal['qt', 'gtk', 'cef', 'mshtml', 'edgechromium']
+GUIType: TypeAlias = Literal['qt', 'gtk', 'cef', 'mshtml', 'edgechromium', 'pyanwe']
 
 logger = logging.getLogger('pywebview')
 guilib: ModuleType | None = None
@@ -63,6 +64,17 @@ def initialize(forced_gui: GUIType | None = None):
         except ImportError:
             logger.exception('pythonnet cannot be loaded')
             return False
+        
+    def import_pyanwe():
+        global guilib
+
+        try:
+            import webview.platforms.android as guilib
+
+            return True
+        except ImportError:
+            logger.exception('pyanwe cannot be loaded')
+            return False
 
     def try_import(guis: list[Callable[[], Any]]) -> bool:
         while guis:
@@ -82,7 +94,7 @@ def initialize(forced_gui: GUIType | None = None):
             os.environ['PYWEBVIEW_GUI'].lower()
             if 'PYWEBVIEW_GUI' in os.environ
             and os.environ['PYWEBVIEW_GUI'].lower()
-            in ['qt', 'gtk', 'cef', 'mshtml', 'edgechromium']
+            in ['qt', 'gtk', 'cef', 'mshtml', 'edgechromium', 'pyanwe']
             else forced_gui,
         )
 
@@ -103,7 +115,10 @@ def initialize(forced_gui: GUIType | None = None):
         if forced_gui == 'qt':
             guis = [import_qt, import_gtk]
         else:
-            guis = [import_gtk, import_qt]
+            if hasattr(sys, 'getandroidapilevel'):
+                guis = [import_pyanwe]
+            else:
+                guis = [import_gtk, import_qt]
 
         if not try_import(guis):
             raise WebViewException(
