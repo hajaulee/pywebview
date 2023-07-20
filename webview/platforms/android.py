@@ -139,8 +139,8 @@ class BrowserView:
     def evaluate_js(self, script):
         def eval():
             def _eval():
-                hh = ValueCallback(handler)
-                self.browser.evaluateJavascript(script, hh)
+                _handler = ValueCallback(handler)
+                self.browser.evaluateJavascript(script, _handler)
             mainPresenter.getActivity().runOnUiThread(Runnable(_eval))
 
         def handler(result):
@@ -161,12 +161,16 @@ class BrowserView:
         pass
 
     def load_html(self, content, base_uri):
-        self.loaded.clear()
-        self.browser.loadDataWithBaseURL(base_uri, content, None, None, None)
+        def _load_html():
+            self.loaded.clear()
+            self.browser.loadDataWithBaseURL(base_uri, content, None, None, None)
+        mainPresenter.getActivity().runOnUiThread(Runnable(_load_html))
 
     def load_url(self, url: str):
-        self.loaded.clear()
-        self.browser.loadUrl(url)
+        def _load_url():
+            self.loaded.clear()
+            self.browser.loadUrl(url)
+        mainPresenter.getActivity().runOnUiThread(Runnable(_load_url))
 
     def hide(self):
         pass
@@ -213,7 +217,6 @@ _already_set_up_app = False
 
 
 def setup_app():
-    # MUST be called before create_window and set_app_menu
     global _already_set_up_app
     if _already_set_up_app:
         return
@@ -229,16 +232,10 @@ def create_window(window):
 
 
 def set_title(title, uid):
-    def _set_title():
-        window.Text = title
-
-    window = BrowserView.instances[uid]
-    _set_title()
+    pass
 
 
 def create_confirmation_dialog(title, message, _):
-    # result = WinForms.MessageBox.Show(message, title, WinForms.MessageBoxButtons.OKCancel)
-    # return result == WinForms.DialogResult.OK
     pass
 
 
@@ -285,13 +282,11 @@ def get_active_window():
     return BrowserView.instances.values()[0].pywebview_window
 
 def show(uid):
-    window = BrowserView.instances[uid]
-    window.show()
+    pass
 
 
 def hide(uid):
-    window = BrowserView.instances[uid]
-    window.hide()
+    pass
 
 
 def toggle_fullscreen(uid):
@@ -300,36 +295,27 @@ def toggle_fullscreen(uid):
 
 
 def set_on_top(uid, on_top):
-    window = BrowserView.instances[uid]
-    window.TopMost = on_top
+    pass
 
 
 def resize(width, height, uid, fix_point):
-    window = BrowserView.instances[uid]
-    window.resize(width, height, fix_point)
+    pass
 
 
 def move(x, y, uid):
-    window = BrowserView.instances[uid]
-    window.move(x, y)
+    pass
 
 
 def minimize(uid):
-    window = BrowserView.instances[uid]
-    window.minimize()
+    pass
 
 
 def restore(uid):
-    window = BrowserView.instances[uid]
-    window.restore()
+    pass
 
 
 def destroy_window(uid):
-    def _close():
-        window.Close()
-
-    window = BrowserView.instances[uid]
-    _close()
+    pass
 
 
 def evaluate_js(script, uid, result_id=None):
@@ -337,12 +323,11 @@ def evaluate_js(script, uid, result_id=None):
 
 
 def get_position(uid):
-    return BrowserView.instances[uid].Left, BrowserView.instances[uid].Top
+    pass
 
 
 def get_size(uid):
-    size = BrowserView.instances[uid].Size
-    return size.Width, size.Height
+    pass
 
 
 def get_screens():
